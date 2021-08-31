@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import Users from "./components/users";
-import SearchStatus from "./components/searchStatus";
 import api from "./API";
+import Pagination from "./components/pagination";
+import SearchStatus from "./components/searchStatus";
+import Users from "./components/users";
+import { USERS_PER_PAGE } from "./constants/constants";
 
 const App = () => {
   const [users, setUsers] = useState(api.users.fetchAll());
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleDelete = id => {
     setUsers(users.filter(user => user._id !== id));
@@ -17,10 +20,21 @@ const App = () => {
     setUsers(newUsers);
   };
 
+  const handlePageChange = number => {
+    setCurrentPage(number);
+  };
+
+  const getCurrentPageUsers = () => {
+    const startIndex = (currentPage - 1) * USERS_PER_PAGE;
+    const endEndex = startIndex + USERS_PER_PAGE;
+    return users.slice(startIndex, endEndex);
+  };
+
   return (
     <>
       <SearchStatus length={users.length} />
-      <Users users={users} onDelete={handleDelete} onLikesToggle={handleLikesToggle} />
+      <Users users={getCurrentPageUsers()} onDelete={handleDelete} onLikesToggle={handleLikesToggle} />
+      <Pagination users={users} currentPage={currentPage} onPageChange={handlePageChange} />
     </>
   );
 };
