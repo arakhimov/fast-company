@@ -1,8 +1,19 @@
+import PropTypes from "prop-types";
 import React from "react";
-import Quality from "./quality";
 import BookMark from "./bookmark";
+import Quality from "./quality";
 
-const User = ({ name, qualities, profession, rate, _id, completedMeetings, onDelete, onLikesToggle, status }) => {
+const User = ({
+  name,
+  qualities,
+  profession,
+  rate,
+  _id,
+  completedMeetings,
+  onDelete,
+  onLikesToggle,
+  status
+}) => {
   return (
     <>
       <tr>
@@ -10,7 +21,7 @@ const User = ({ name, qualities, profession, rate, _id, completedMeetings, onDel
           {name}
         </th>
         <td>
-          {qualities.map(quality => (
+          {qualities.map((quality) => (
             <Quality key={quality._id} {...quality} />
           ))}
         </td>
@@ -21,13 +32,29 @@ const User = ({ name, qualities, profession, rate, _id, completedMeetings, onDel
           <BookMark onLikesToggle={onLikesToggle} id={_id} status={status} />
         </td>
         <td>
-          <button onClick={() => onDelete(_id)} type="button" className="btn btn-danger">
+          <button
+            onClick={() => onDelete(_id)}
+            type="button"
+            className="btn btn-danger"
+          >
             delete
           </button>
         </td>
       </tr>
     </>
   );
+};
+
+User.propTypes = {
+  name: PropTypes.string.isRequired,
+  qualities: PropTypes.array.isRequired,
+  profession: PropTypes.object.isRequired,
+  rate: PropTypes.number.isRequired,
+  _id: PropTypes.string.isRequired,
+  completedMeetings: PropTypes.number.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onLikesToggle: PropTypes.func.isRequired,
+  status: PropTypes.bool.isRequired
 };
 
 export default User;

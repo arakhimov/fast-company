@@ -1,8 +1,9 @@
+import PropTypes from "prop-types";
 import React from "react";
 import User from "./user";
 
 const Users = ({ users, ...rest }) => {
-  const getUsersTable = users => {
+  const getUsersTable = (users) => {
     return users.length ? (
       <table className="table">
         <thead>
@@ -18,7 +19,7 @@ const Users = ({ users, ...rest }) => {
           </tr>
         </thead>
         <tbody>
-          {users.map(user => {
+          {users.map((user) => {
             return <User key={user._id} {...user} {...rest} />;
           })}
         </tbody>
@@ -27,6 +28,12 @@ const Users = ({ users, ...rest }) => {
   };
 
   return <>{getUsersTable(users)}</>;
+};
+
+Users.propTypes = {
+  users: PropTypes.array.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onLikesToggle: PropTypes.func.isRequired
 };
 
 export default Users;

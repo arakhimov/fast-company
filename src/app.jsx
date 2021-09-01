@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import React, { useState } from "react";
 import api from "./API";
 import Pagination from "./components/pagination";
@@ -6,21 +7,25 @@ import Users from "./components/users";
 import { USERS_PER_PAGE } from "./constants/constants";
 
 const App = () => {
-  const [users, setUsers] = useState(api.users.fetchAll());
+  const initialUsers = api.users.fetchAll().map((user) => {
+    user.status = false;
+    return user;
+  });
+  const [users, setUsers] = useState(initialUsers);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleDelete = id => {
-    setUsers(users.filter(user => user._id !== id));
+  const handleDelete = (id) => {
+    setUsers(users.filter((user) => user._id !== id));
   };
 
-  const handleLikesToggle = id => {
-    const newUsers = [...users];
-    const elementIndex = users.findIndex(user => user._id === id);
+  const handleLikesToggle = (id) => {
+    const newUsers = cloneDeep(users);
+    const elementIndex = users.findIndex((user) => user._id === id);
     newUsers[elementIndex].status = !newUsers[elementIndex].status;
     setUsers(newUsers);
   };
 
-  const handlePageChange = number => {
+  const handlePageChange = (number) => {
     setCurrentPage(number);
   };
 
@@ -33,8 +38,16 @@ const App = () => {
   return (
     <>
       <SearchStatus length={users.length} />
-      <Users users={getCurrentPageUsers()} onDelete={handleDelete} onLikesToggle={handleLikesToggle} />
-      <Pagination users={users} currentPage={currentPage} onPageChange={handlePageChange} />
+      <Users
+        users={getCurrentPageUsers()}
+        onDelete={handleDelete}
+        onLikesToggle={handleLikesToggle}
+      />
+      <Pagination
+        users={users}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </>
   );
 };

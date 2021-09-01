@@ -1,6 +1,7 @@
+import PropTypes from "prop-types";
 import React from "react";
 
-const addIcon = status => {
+const addIcon = (status) => {
   return status ? (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -35,6 +36,12 @@ const BookMark = ({ onLikesToggle, id, status }) => {
       {addIcon(status)}
     </button>
   );
+};
+
+BookMark.propTypes = {
+  onLikesToggle: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  status: PropTypes.bool.isRequired
 };
 
 export default BookMark;

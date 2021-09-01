@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 import { USERS_PER_PAGE } from "../constants/constants";
 import PaginationItem from "./paginationItem";
@@ -14,12 +15,18 @@ const Pagination = ({ users, ...rest }) => {
   return (
     <nav aria-label="...">
       <ul className="pagination">
-        {pages.map(page => (
+        {pages.map((page) => (
           <PaginationItem key={page} number={page} {...rest} />
         ))}
       </ul>
     </nav>
   );
+};
+
+Pagination.propTypes = {
+  users: PropTypes.array.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired
 };
 
 export default Pagination;

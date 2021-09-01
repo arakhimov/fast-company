@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 
 const PaginationItem = ({ number, currentPage, onPageChange }) => {
@@ -5,7 +6,7 @@ const PaginationItem = ({ number, currentPage, onPageChange }) => {
     return `page-item${number === currentPage ? " active" : ""}`;
   };
 
-  const handlePageChange = event => {
+  const handlePageChange = (event) => {
     event.preventDefault();
     onPageChange(number);
   };
@@ -17,6 +18,12 @@ const PaginationItem = ({ number, currentPage, onPageChange }) => {
       </a>
     </li>
   );
+};
+
+PaginationItem.propTypes = {
+  number: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired
 };
 
 export default PaginationItem;
