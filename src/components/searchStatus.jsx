@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 
 const SearchStatus = ({ length }) => {
-  const renderPhrase = (number) => {
+  const renderPhrase = number => {
     if (number === 0) {
       return "Никто с тобой не тусанет";
     }

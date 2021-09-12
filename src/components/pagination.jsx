@@ -1,22 +1,24 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { USERS_PER_PAGE } from "../constants/constants";
-import PaginationItem from "./paginationItem";
 
-const Pagination = ({ users, ...rest }) => {
-  const pages = [];
-
-  const pagesAmount = Math.ceil(users.length / USERS_PER_PAGE);
-
-  for (let i = 1; i <= pagesAmount; i++) {
-    pages.push(i);
-  }
+const Pagination = ({ usersAmount, currentPage, onPageChange }) => {
+  const pagesAmount = Math.ceil(usersAmount / USERS_PER_PAGE);
+  const pages = new Array(pagesAmount).fill(null).map((_, ind) => ind + 1);
 
   return (
     <nav aria-label="...">
       <ul className="pagination">
-        {pages.map((page) => (
-          <PaginationItem key={page} number={page} {...rest} />
+        {pages.map(page => (
+          <li
+            key={page}
+            className={"page-item " + (page === currentPage ? "active" : "")}
+            aria-current="page"
+          >
+            <a className="page-link btn" onClick={() => onPageChange(page)}>
+              {page}
+            </a>
+          </li>
         ))}
       </ul>
     </nav>
@@ -24,7 +26,7 @@ const Pagination = ({ users, ...rest }) => {
 };
 
 Pagination.propTypes = {
-  users: PropTypes.array.isRequired,
+  usersAmount: PropTypes.number.isRequired,
   currentPage: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired
 };

@@ -21,7 +21,7 @@ const User = ({
           {name}
         </th>
         <td>
-          {qualities.map((quality) => (
+          {qualities.map(quality => (
             <Quality key={quality._id} {...quality} />
           ))}
         </td>
@@ -54,7 +54,7 @@ User.propTypes = {
   completedMeetings: PropTypes.number.isRequired,
   onDelete: PropTypes.func.isRequired,
   onLikesToggle: PropTypes.func.isRequired,
-  status: PropTypes.bool.isRequired
+  status: PropTypes.bool
 };
 
 export default User;
