@@ -3,8 +3,6 @@ import React from "react";
 import BookMark from "./bookmark";
 import QualitiesList from "./qualitiesList";
 import Table from "./table";
-// import TableBody from "./tableBody";
-// import TableHeader from "./tableHeader";
 
 const UsersTable = ({
   users,
@@ -53,10 +51,6 @@ const UsersTable = ({
       columns={columns}
       data={users}
     />
-    // <Table>
-    //   <TableHeader {...{ onSort, currentSort, columns }} />
-    //   <TableBody {...{ data: users, columns }} />
-    // </Table>
   );
 };
 
