@@ -5,6 +5,7 @@ import api from "../API";
 import { USERS_PER_PAGE } from "../constants/constants";
 import GroupList from "./groupList";
 import Pagination from "./pagination";
+import SearchField from "./searchField";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
 
@@ -19,6 +20,9 @@ const UsersList = () => {
   useEffect(() => {
     api.users.fetchAll().then((data) => setUsers(data));
   }, []);
+
+  const [searchField, setSearchField] = useState("");
+  const [foundUsers, setFoundUsers] = useState();
 
   const handleDelete = (id) => {
     setUsers(users.filter((user) => user._id !== id));
@@ -49,6 +53,7 @@ const UsersList = () => {
 
   const handlePfofessionSelect = (item) => {
     setSelectedProf(item);
+    setSearchField("");
   };
 
   const handleClearFilter = () => {
@@ -59,13 +64,23 @@ const UsersList = () => {
     setSortBy(item);
   };
 
+  const handleChangeSearch = ({ target }) => {
+    setSearchField(target.value);
+    setFoundUsers(
+      users.filter((user) =>
+        user.name.toLowerCase().includes(target.value.toLowerCase())
+      )
+    );
+    setSelectedProf(null);
+  };
+
   if (users) {
     const filteredUsers = selectedProf
       ? users.filter(
           (user) =>
             JSON.stringify(user.profession) === JSON.stringify(selectedProf)
         )
-      : users;
+      : foundUsers || users;
 
     const sortedUsers = orderBy(
       filteredUsers,
@@ -78,9 +93,9 @@ const UsersList = () => {
     const currentPageUsers = sortedUsers.slice(startIndex, endEndex);
 
     return (
-      <div className="d-flex">
+      <div className="d-flex p-4">
         {professions && (
-          <div className="d-flex flex-shrink-0 p-2 flex-column">
+          <div className="d-flex flex-shrink-0 p-2 flex-column me-4">
             <GroupList
               items={professions}
               onItemSelect={handlePfofessionSelect}
@@ -96,6 +111,14 @@ const UsersList = () => {
         )}
         <div className="d-flex flex-column flex-grow-1 align-items-start">
           <SearchStatus length={filteredUsers.length} />
+          <form className="search w-100 mt-2">
+            <SearchField
+              name="search"
+              value={searchField}
+              placeholder="Search.."
+              onChange={handleChangeSearch}
+            />
+          </form>
           {currentPageUsers.length && (
             <div className="d-flex flex-column w-100">
               <UserTable

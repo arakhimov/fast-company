@@ -10,11 +10,12 @@ const GroupList = ({
 }) => {
   return (
     <ul className="list-group">
-      {Object.keys(items).map(item => (
+      {Object.keys(items).map((item) => (
         <li
           key={items[item][valueProperty]}
           className={
-            "list-group-item " + (selectedItem === items[item] ? "active" : "")
+            "px-4 list-group-item " +
+            (selectedItem === items[item] ? "active" : "")
           }
           onClick={() => onItemSelect(items[item])}
           role="button"
