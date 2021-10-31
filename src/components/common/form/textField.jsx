@@ -6,6 +6,10 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
 
   const handleShowPassword = () => setShowPassword((prevState) => !prevState);
 
+  const handleChange = ({ target }) => {
+    onChange({ name: target.name, value: target.value });
+  };
+
   return (
     <div className="mb-4">
       <label className="form-label mb-2" htmlFor={name}>
@@ -17,7 +21,7 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
           id={name}
           name={name}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           autoComplete="off"
           className={`form-control ${error ? "is-invalid" : "is-valid"}`}
         />

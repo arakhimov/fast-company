@@ -1,15 +1,15 @@
 /* eslint-disable indent */
 import { orderBy } from "lodash";
 import React, { useEffect, useState } from "react";
-import api from "../API";
-import { USERS_PER_PAGE } from "../constants/constants";
-import GroupList from "./groupList";
-import Pagination from "./pagination";
-import SearchField from "./searchField";
-import SearchStatus from "./searchStatus";
-import UserTable from "./usersTable";
+import api from "../../../API";
+import { USERS_PER_PAGE } from "../../../constants/constants";
+import GroupList from "../../common/groupList";
+import Pagination from "../../common/pagination";
+import SearchField from "../../ui/searchField";
+import SearchStatus from "../../ui/searchStatus";
+import UserTable from "../../ui/usersTable";
 
-const UsersList = () => {
+const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
   const [professions, setProfessions] = useState();
@@ -19,6 +19,10 @@ const UsersList = () => {
 
   useEffect(() => {
     api.users.fetchAll().then((data) => setUsers(data));
+  }, []);
+
+  useEffect(() => {
+    api.professions.fetchAll().then((data) => setProfessions(data));
   }, []);
 
   const [searchField, setSearchField] = useState("");
@@ -38,10 +42,6 @@ const UsersList = () => {
       })
     );
   };
-
-  useEffect(() => {
-    api.professions.fetchAll().then((data) => setProfessions(data));
-  }, []);
 
   const handlePageChange = (number) => {
     setCurrentPage(number);
@@ -143,7 +143,7 @@ const UsersList = () => {
       </div>
     );
   }
-  return "loading...";
+  return <p className="px-4">loading...</p>;
 };
 
-export default UsersList;
+export default UsersListPage;

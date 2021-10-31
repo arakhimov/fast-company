@@ -4,9 +4,16 @@ export function validator(data, config) {
   function validate(validateMethod, data, config) {
     let validateStatus = false;
     switch (validateMethod) {
-      case "isRequired":
-        validateStatus = data.trim() === "";
+      case "isRequired": {
+        if (typeof data === "boolean") {
+          validateStatus = !data;
+        } else if (typeof data === "object") {
+          validateStatus = data.name.trim() === "";
+        } else {
+          validateStatus = data.trim() === "";
+        }
         break;
+      }
       case "isEmail": {
         const emailRegExp = /^\S+@\S+\.\S+$/g;
         validateStatus = !emailRegExp.test(data);
@@ -33,6 +40,7 @@ export function validator(data, config) {
   }
 
   for (const fieldName in data) {
+    // console.log(data[fieldName]);
     for (const validateMethod in config[fieldName]) {
       const error = validate(
         validateMethod,

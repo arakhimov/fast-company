@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import React from "react";
-import UserPage from "./userPage";
-import UsersList from "./usersList";
+import UsersListPage from "../components/page/userListPage";
+import UserPage from "../components/page/userPage/userPage";
 
 const Users = ({ match }) => {
   const userId = match.params.userId;
 
-  return userId ? <UserPage /> : <UsersList />;
+  return userId ? <UserPage /> : <UsersListPage />;
 };
 
 Users.propTypes = {

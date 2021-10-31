@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import CaretArrow from "./caretArrow";
+import CaretArrow from "../caretArrow";
 
 const TableHeader = ({ currentSort, onSort, columns }) => {
   const handleSort = (item) => {
@@ -29,7 +29,9 @@ const TableHeader = ({ currentSort, onSort, columns }) => {
             role={columns[column].path && "button"}
           >
             {columns[column].name}
-            {columns[column].path === currentSort.iterator && <CaretArrow status={currentSort.order === "asc"} />}
+            {columns[column].path === currentSort.iterator && (
+              <CaretArrow status={currentSort.order === "asc"} />
+            )}
           </th>
         ))}
       </tr>

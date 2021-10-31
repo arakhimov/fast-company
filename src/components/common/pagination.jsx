@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { USERS_PER_PAGE } from "../constants/constants";
+import { USERS_PER_PAGE } from "../../constants/constants";
 
 const Pagination = ({ usersAmount, currentPage, onPageChange }) => {
   const pagesAmount = Math.ceil(usersAmount / USERS_PER_PAGE);
@@ -9,7 +9,7 @@ const Pagination = ({ usersAmount, currentPage, onPageChange }) => {
   return (
     <nav aria-label="...">
       <ul className="pagination">
-        {pages.map(page => (
+        {pages.map((page) => (
           <li
             key={page}
             className={"page-item " + (page === currentPage ? "active" : "")}
