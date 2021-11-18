@@ -3,6 +3,7 @@ import { orderBy } from "lodash";
 import React, { useEffect, useState } from "react";
 import api from "../../../API";
 import { USERS_PER_PAGE } from "../../../constants/constants";
+import { useUsers } from "../../../hooks/useUsers";
 import GroupList from "../../common/groupList";
 import Pagination from "../../common/pagination";
 import SearchField from "../../ui/searchField";
@@ -15,11 +16,7 @@ const UsersListPage = () => {
   const [professions, setProfessions] = useState();
   const [sortBy, setSortBy] = useState({ iterator: "name", order: "asc" });
 
-  const [users, setUsers] = useState();
-
-  useEffect(() => {
-    api.users.fetchAll().then((data) => setUsers(data));
-  }, []);
+  const { users } = useUsers();
 
   useEffect(() => {
     api.professions.fetchAll().then((data) => setProfessions(data));
@@ -29,18 +26,20 @@ const UsersListPage = () => {
   const [foundUsers, setFoundUsers] = useState();
 
   const handleDelete = (id) => {
-    setUsers(users.filter((user) => user._id !== id));
+    // setUsers(users.filter((user) => user._id !== id));
+    console.log(id);
   };
 
   const handleLikesToggle = (id) => {
-    setUsers(
-      users.map((user) => {
-        if (user._id === id) {
-          return { ...user, bookmark: !user.bookmark };
-        }
-        return user;
-      })
-    );
+    // setUsers(
+    //   users.map((user) => {
+    //     if (user._id === id) {
+    //       return { ...user, bookmark: !user.bookmark };
+    //     }
+    //     return user;
+    //   })
+    // );
+    console.log(id);
   };
 
   const handlePageChange = (number) => {

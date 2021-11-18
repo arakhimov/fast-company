@@ -2,11 +2,14 @@ import PropTypes from "prop-types";
 import React from "react";
 import UsersListPage from "../components/page/userListPage";
 import UserPage from "../components/page/userPage/userPage";
+import { UsersProvider } from "../hooks/useUsers";
 
 const Users = ({ match }) => {
   const userId = match.params.userId;
 
-  return userId ? <UserPage /> : <UsersListPage />;
+  return (
+    <UsersProvider>{userId ? <UserPage /> : <UsersListPage />}</UsersProvider>
+  );
 };
 
 Users.propTypes = {
