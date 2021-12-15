@@ -1,22 +1,26 @@
 /* eslint-disable multiline-ternary */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useHistory, useParams } from "react-router-dom";
-import api from "../../../API";
+import { useUsers } from "../../../hooks/useUsers";
 import Comments from "../../ui/comments";
 import EditForm from "../../ui/editForm";
 import Qualities from "../../ui/qualities/qualitiesList";
 
 const UserPage = () => {
-  const [user, setUser] = useState();
+  // const [user, setUser] = useState();
   const { userId, isEdit } = useParams();
   const history = useHistory();
 
-  useEffect(() => {
-    return api.users.getUserById(userId).then((user) => setUser(user));
-  }, []);
+  // useEffect(() => {
+  //   return api.users.getUserById(userId).then((user) => setUser(user));
+  // }, []);
+
+  const { getUserById } = useUsers();
+  const user = getUserById(userId);
 
   const handleUpdateUser = (data) => {
-    api.users.update(data).then((data) => setUser(data));
+    // api.users.update(data).then((data) => setUser(data));
+    console.log(data);
   };
 
   const handleRedirectToEditPage = () => {

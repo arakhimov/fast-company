@@ -9,7 +9,7 @@ export const useProfession = () => {
 };
 
 export const ProfessionProvider = ({ children }) => {
-  const [profession, setProfession] = useState([]);
+  const [professions, setProfessions] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -27,7 +27,7 @@ export const ProfessionProvider = ({ children }) => {
   async function getProfessionList() {
     try {
       const { content } = await professionService.get();
-      setProfession(content);
+      setProfessions(content);
       setLoading(false);
     } catch (error) {
       errorCatcher(error);
@@ -35,7 +35,7 @@ export const ProfessionProvider = ({ children }) => {
   }
 
   const getProfession = (id) => {
-    return profession.find((item) => item._id === id);
+    return professions.find((item) => item._id === id);
   };
 
   function errorCatcher(error) {
@@ -46,7 +46,7 @@ export const ProfessionProvider = ({ children }) => {
 
   return (
     <ProfessionContext.Provider
-      value={{ profession, isLoading, getProfession }}
+      value={{ professions, isLoading, getProfession }}
     >
       {children}
     </ProfessionContext.Provider>

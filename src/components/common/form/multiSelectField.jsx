@@ -13,21 +13,15 @@ const MultiSelectField = ({ options, onChange, name, label, defaultValue }) => {
       : options;
 
   const handleChange = (value) => {
-    // console.log(
-    //   value
+    // onChange({
+    //   name: name,
+    //   value: value
     //     .map((item) =>
     //       Object.values(options).find(({ name }) => name === item.label)
     //     )
     //     .flat()
-    // );
-    onChange({
-      name: name,
-      value: value
-        .map((item) =>
-          Object.values(options).find(({ name }) => name === item.label)
-        )
-        .flat()
-    });
+    // });
+    onChange({ name, value: value.map((q) => q.value) });
   };
 
   return (

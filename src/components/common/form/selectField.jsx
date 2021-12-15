@@ -20,10 +20,12 @@ const SelectField = ({
       : options;
 
   const handleChange = ({ target }) => {
-    onChange({
+    const data = {
       name: target.name,
       value: optionsArray.find((item) => item.name === target.value)
-    });
+    };
+    const newData = { ...data, value: data.value._id };
+    onChange(newData);
   };
 
   return (

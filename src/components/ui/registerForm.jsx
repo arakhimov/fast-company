@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import api from "../../API";
+import { useHistory } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { useProfession } from "../../hooks/useProfession";
+// import api from "../../API";
+import { useQuality } from "../../hooks/useQuality";
 import { validator } from "../../utils/validator";
 import CheckBoxField from "../common/form/checkBoxField";
 import MultiSelectField from "../common/form/multiSelectField";
@@ -17,13 +21,17 @@ const RegisterForm = () => {
     license: false
   });
   const [errors, setErrors] = useState({});
-  const [professions, setProfessions] = useState();
-  const [qualities, setQualities] = useState();
 
-  useEffect(() => {
-    api.professions.fetchAll().then((data) => setProfessions(data));
-    api.qualities.fetchAll().then((data) => setQualities(data));
-  }, []);
+  const { professions } = useProfession();
+  const { qualities } = useQuality();
+  const { signUp } = useAuth();
+
+  const history = useHistory();
+
+  // useEffect(() => {
+  //   api.professions.fetchAll().then((data) => setProfessions(data));
+  //   api.qualities.fetchAll().then((data) => setQualities(data));
+  // }, []);
 
   useEffect(() => validate(), [data]);
 
@@ -67,12 +75,19 @@ const RegisterForm = () => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    console.log(data);
+    try {
+      await signUp(data);
+      history.push("/");
+    } catch (error) {
+      setErrors(error);
+    }
   };
+
+  const qualitiesList = qualities.map((q) => ({ label: q.name, value: q._id }));
 
   return (
     <form onSubmit={handleSubmit}>
@@ -112,7 +127,7 @@ const RegisterForm = () => {
         value={data.sex}
       />
       <MultiSelectField
-        options={qualities}
+        options={qualitiesList}
         onChange={handleChange}
         name="qualities"
         label="Выберите ваши качества"
