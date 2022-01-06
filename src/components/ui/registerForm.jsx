@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { useProfession } from "../../hooks/useProfession";
-// import api from "../../API";
 import { useQuality } from "../../hooks/useQuality";
 import { validator } from "../../utils/validator";
 import CheckBoxField from "../common/form/checkBoxField";
@@ -14,8 +13,9 @@ import TextField from "../common/form/textField";
 const RegisterForm = () => {
   const [data, setData] = useState({
     email: "",
+    name: "",
     password: "",
-    profession: { name: "", value: "" },
+    profession: "",
     sex: "male",
     qualities: [],
     license: false
@@ -28,17 +28,19 @@ const RegisterForm = () => {
 
   const history = useHistory();
 
-  // useEffect(() => {
-  //   api.professions.fetchAll().then((data) => setProfessions(data));
-  //   api.qualities.fetchAll().then((data) => setQualities(data));
-  // }, []);
-
   useEffect(() => validate(), [data]);
 
   const validatorConfig = {
     email: {
       isRequired: { message: "Электронная почта обязательна для заполнения" },
       isEmail: { message: "Электронная почта введена некорректно" }
+    },
+    name: {
+      isRequired: { message: "Имя обязательно для заполнения" },
+      isMin: {
+        message: "Имя должно состоять минимум из 3 символов",
+        value: 3
+      }
     },
     password: {
       isRequired: { message: "Пароль обязателен для заполнения" },
@@ -72,7 +74,10 @@ const RegisterForm = () => {
   const isValid = Object.keys(errors).length === 0;
 
   const handleChange = (target) => {
-    setData((prevState) => ({ ...prevState, [target.name]: target.value }));
+    setData((prevState) => ({
+      ...prevState,
+      [target.name]: target.value
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -99,6 +104,13 @@ const RegisterForm = () => {
         error={errors.email}
       />
       <TextField
+        label="Имя"
+        name="name"
+        value={data.name}
+        onChange={handleChange}
+        error={errors.name}
+      />
+      <TextField
         label="Пароль"
         type="password"
         name="password"
@@ -112,7 +124,7 @@ const RegisterForm = () => {
         onChange={handleChange}
         options={professions}
         defaultValue="Choose..."
-        value={data.profession.name}
+        value={data.profession}
         error={errors.profession}
       />
       <RadioField

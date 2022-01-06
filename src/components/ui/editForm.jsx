@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import api from "../../API";
+// import api from "../../API";
+import { useProfession } from "../../hooks/useProfession";
+import { useQuality } from "../../hooks/useQuality";
 import { validator } from "../../utils/validator";
 import MultiSelectField from "../common/form/multiSelectField";
 import RadioField from "../common/form/radioField";
@@ -18,14 +20,14 @@ const EditForm = ({ data: initialData, update }) => {
     qualities: initialData.qualities
   });
   const [errors, setErrors] = useState({});
-  const [professions, setProfessions] = useState();
-  const [qualities, setQualities] = useState();
+  const { professions } = useProfession();
+  const { qualities } = useQuality();
   const history = useHistory();
 
-  useEffect(() => {
-    api.professions.fetchAll().then((data) => setProfessions(data));
-    api.qualities.fetchAll().then((data) => setQualities(data));
-  }, []);
+  // useEffect(() => {
+  //   // api.professions.fetchAll().then((data) => setProfessions(data));
+  //   // api.qualities.fetchAll().then((data) => setQualities(data));
+  // }, []);
 
   useEffect(() => validate(), [data]);
 
@@ -62,6 +64,8 @@ const EditForm = ({ data: initialData, update }) => {
     update(data);
     history.push(`/users/${data._id}`);
   };
+
+  const qualitiesList = qualities.map((q) => ({ label: q.name, value: q._id }));
 
   return (
     <form onSubmit={handleSubmit}>
@@ -100,13 +104,12 @@ const EditForm = ({ data: initialData, update }) => {
         value={data.sex}
       />
       <MultiSelectField
-        options={qualities}
+        options={qualitiesList}
         onChange={handleChange}
         name="qualities"
         label="Выберите ваши качества"
         defaultValue={data.qualities}
       />
-
       <button
         className="btn btn-primary w-25"
         type="submit"

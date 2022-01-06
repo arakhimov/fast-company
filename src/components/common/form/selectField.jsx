@@ -14,18 +14,13 @@ const SelectField = ({
   const optionsArray =
     !Array.isArray(options) && typeof options === "object"
       ? Object.keys(options).map((optionName) => ({
-          _id: options[optionName]._id,
+          value: options[optionName]._id,
           name: options[optionName].name
         }))
       : options;
 
   const handleChange = ({ target }) => {
-    const data = {
-      name: target.name,
-      value: optionsArray.find((item) => item.name === target.value)
-    };
-    const newData = { ...data, value: data.value._id };
-    onChange(newData);
+    onChange({ name: target.name, value: target.value });
   };
 
   return (
@@ -40,17 +35,13 @@ const SelectField = ({
         onChange={handleChange}
         value={value}
       >
-        <option selected disabled value="">
+        <option disabled value="">
           {defaultValue}
         </option>
         {optionsArray &&
-          optionsArray.map((optionName) => (
-            <option
-              key={optionName._id}
-              value={optionName.name}
-              data-asd={optionName._id}
-            >
-              {optionName.name}
+          optionsArray.map((option) => (
+            <option key={option._id} value={option._id}>
+              {option.name}
             </option>
           ))}
       </select>

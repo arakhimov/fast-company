@@ -2,6 +2,8 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import configFile from "../config.json";
+import { httpAuth } from "../hooks/useAuth";
+import localStorageService, { setTokens } from "./localStorage.service";
 
 const http = axios.create({
   baseURL: configFile.apiEndpoint
@@ -10,11 +12,33 @@ const http = axios.create({
 // axios.defaults.baseURL = configFile.apiEndpoint;
 
 http.interceptors.request.use(
-  function (config) {
+  async function (config) {
     if (configFile.isFireBase) {
       const containSlash = /\/$/gi.test(config.url);
       config.url =
         (containSlash ? config.url.slice(0, -1) : config.url) + ".json";
+
+      // обновление refresh_token
+      const expireInDate = localStorageService.getTokenExpiresDate();
+      const refreshToken = localStorageService.getRefreshToken();
+      if (refreshToken && expireInDate < Date.now()) {
+        const endPoint = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const { data } = await httpAuth.post(endPoint, {
+          grant_type: "refresh_token",
+          refresh_token: refreshToken
+        });
+        setTokens({
+          expiresIn: data.expires_in,
+          idToken: data.id_token,
+          localId: data.user_id,
+          refreshToken: data.refresh_token
+        });
+      }
+
+      const accessToken = localStorageService.getAccessToken();
+      if (accessToken) {
+        config.params = { ...config.params, auth: accessToken };
+      }
     }
     return config;
   },

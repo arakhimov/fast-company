@@ -16,13 +16,20 @@ export const getFormatDate = (timestamp) => {
     return `${commentDate.getDate()}.${commentDate.getMonth()}.${commentDate.getFullYear()}`;
   }
   if (!isCurrentMonth || (isCurrentMonth && !isCurrentDay)) {
-    return `${commentDate.getDate()}.${commentDate.getMonth() + 1}`;
+    return `${commentDate.getDate().toString().padStart(2, "0")}.${(
+      commentDate.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}`;
   }
   if (
     (isCurrentDay && !isCurrentHour) ||
     (isCurrentHour && minutesDif > HALF_HOUR_MINUTES_AGO)
   ) {
-    return `${commentDate.getHours()}.${commentDate.getMinutes()}`;
+    return `${commentDate.getHours()}.${commentDate
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
   }
   if (minutesDif <= ONE_MINUTES_AGO) {
     return `${ONE_MINUTES_AGO} минуту назад`;

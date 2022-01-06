@@ -1,8 +1,9 @@
 /* eslint-disable indent */
 import { orderBy } from "lodash";
 import React, { useEffect, useState } from "react";
-import api from "../../../API";
 import { USERS_PER_PAGE } from "../../../constants/constants";
+import { useAuth } from "../../../hooks/useAuth";
+import { useProfession } from "../../../hooks/useProfession";
 import { useUsers } from "../../../hooks/useUsers";
 import GroupList from "../../common/groupList";
 import Pagination from "../../common/pagination";
@@ -13,14 +14,17 @@ import UserTable from "../../ui/usersTable";
 const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
-  const [professions, setProfessions] = useState();
+  // const [professions, setProfessions] = useState();
   const [sortBy, setSortBy] = useState({ iterator: "name", order: "asc" });
+
+  const { professions, isLoading: professionsLoading } = useProfession();
+  const { currentUser } = useAuth();
 
   const { users } = useUsers();
 
-  useEffect(() => {
-    api.professions.fetchAll().then((data) => setProfessions(data));
-  }, []);
+  // useEffect(() => {
+  //   api.professions.fetchAll().then((data) => setProfessions(data));
+  // }, []);
 
   const [searchField, setSearchField] = useState("");
   const [foundUsers, setFoundUsers] = useState();
@@ -73,13 +77,19 @@ const UsersListPage = () => {
     setSelectedProf(null);
   };
 
-  if (users) {
+  function filterUsers(data) {
     const filteredUsers = selectedProf
-      ? users.filter(
+      ? data.filter(
           (user) =>
             JSON.stringify(user.profession) === JSON.stringify(selectedProf)
         )
-      : foundUsers || users;
+      : foundUsers || data;
+
+    return filteredUsers.filter((user) => user._id !== currentUser._id);
+  }
+
+  if (users) {
+    const filteredUsers = filterUsers(users);
 
     const sortedUsers = orderBy(
       filteredUsers,
@@ -93,7 +103,7 @@ const UsersListPage = () => {
 
     return (
       <div className="d-flex p-4">
-        {professions && (
+        {professions && !professionsLoading && (
           <div className="d-flex flex-shrink-0 p-2 flex-column me-4">
             <GroupList
               items={professions}
