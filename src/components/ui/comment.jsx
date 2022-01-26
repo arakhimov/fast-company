@@ -1,13 +1,12 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { useAuth } from "../../hooks/useAuth";
-import { useUsers } from "../../hooks/useUsers";
+import { useSelector } from "react-redux";
+import { getCurrentUserId, getUserById } from "../../store/users";
 import { getFormatDate } from "../../utils/getFormatDate";
 
 const Comment = ({ _id, content, createdAt, userId, onRemove }) => {
-  const { getUserById } = useUsers();
-  const user = getUserById(userId);
-  const { currentUser } = useAuth();
+  const user = useSelector(getUserById(userId));
+  const currentUserId = useSelector(getCurrentUserId());
 
   return (
     <li className="list-group-item border-0 d-flex flex-wrap">
@@ -24,7 +23,7 @@ const Comment = ({ _id, content, createdAt, userId, onRemove }) => {
           <span className="fs-6"> &#8212; {getFormatDate(createdAt)}</span>
         </p>
         <p>{content}</p>
-        {currentUser._id === userId && (
+        {currentUserId === userId && (
           <button
             type="button"
             className="btn btn-sm position-absolute top-0 end-0 text-primary"

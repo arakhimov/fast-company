@@ -1,23 +1,39 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import api from "../../API";
-import { useComments } from "../../hooks/useComments";
+import {
+  createComment,
+  getComments,
+  loadCommentsList,
+  removeComment
+} from "../../store/comments";
+import { getCurrentUserId } from "../../store/users";
 import CommentsList from "./commentsList";
 import NewCommentForm from "./newCommentForm";
 
 const Comments = () => {
   const [users, setUsers] = useState();
-  const { createComment, comments, removeComment } = useComments();
+
+  const { userId: pageId } = useParams();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadCommentsList(pageId));
+  }, [pageId]);
+  const comments = useSelector(getComments());
+  const currentIserId = useSelector(getCurrentUserId());
 
   useEffect(() => {
     api.users.fetchAll().then((data) => setUsers(data));
   }, []);
 
   const handleRemove = (id) => {
-    removeComment(id);
+    // removeComment(id);
+    dispatch(removeComment(id));
   };
 
   const handleAddComment = (data) => {
-    createComment(data);
+    dispatch(createComment({ ...data, pageId, userId: currentIserId }));
   };
 
   return (

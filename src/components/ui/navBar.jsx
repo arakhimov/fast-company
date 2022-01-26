@@ -1,11 +1,12 @@
 /* eslint-disable multiline-ternary */
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { getGetCurrentUserData } from "../../store/users";
 import NavProfile from "./navProfile";
 
 const NavBar = () => {
-  const { currentUser } = useAuth();
+  const currentUser = useSelector(getGetCurrentUserData());
 
   return (
     <nav className="nav d-flex align-items-center justify-content-between bg-light px-3">

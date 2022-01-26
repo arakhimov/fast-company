@@ -2,7 +2,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import configFile from "../config.json";
-import { httpAuth } from "../hooks/useAuth";
+import authService from "./auth.service";
 import localStorageService, { setTokens } from "./localStorage.service";
 
 const http = axios.create({
@@ -22,11 +22,7 @@ http.interceptors.request.use(
       const expireInDate = localStorageService.getTokenExpiresDate();
       const refreshToken = localStorageService.getRefreshToken();
       if (refreshToken && expireInDate < Date.now()) {
-        const endPoint = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_KEY}`;
-        const { data } = await httpAuth.post(endPoint, {
-          grant_type: "refresh_token",
-          refresh_token: refreshToken
-        });
+        const data = authService.refresh();
         setTokens({
           expiresIn: data.expires_in,
           idToken: data.id_token,
@@ -46,13 +42,6 @@ http.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-// function transormData(data) {
-//   return data
-//     ? Object.keys(data).map((key) => ({
-//         ...data[key]
-//       }))
-//     : [];
-// }
 
 function transormData(data) {
   return data && !data._id

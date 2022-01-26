@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-// import api from "../../API";
-import { useProfession } from "../../hooks/useProfession";
-import { useQuality } from "../../hooks/useQuality";
+import { getProfessions } from "../../store/professions";
+import { getQualities } from "../../store/qualities";
 import { validator } from "../../utils/validator";
 import MultiSelectField from "../common/form/multiSelectField";
 import RadioField from "../common/form/radioField";
@@ -20,14 +20,9 @@ const EditForm = ({ data: initialData, update }) => {
     qualities: initialData.qualities
   });
   const [errors, setErrors] = useState({});
-  const { professions } = useProfession();
-  const { qualities } = useQuality();
+  const professions = useSelector(getProfessions());
+  const qualities = useSelector(getQualities());
   const history = useHistory();
-
-  // useEffect(() => {
-  //   // api.professions.fetchAll().then((data) => setProfessions(data));
-  //   // api.qualities.fetchAll().then((data) => setQualities(data));
-  // }, []);
 
   useEffect(() => validate(), [data]);
 

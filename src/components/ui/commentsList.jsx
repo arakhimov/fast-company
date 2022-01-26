@@ -9,7 +9,7 @@ const CommentsList = ({ comments, onRemove }) => {
         <div className="card p-3">
           <h1 className="border-bottom pb-3">Comments</h1>
           <ul className="list-group border-0">
-            {comments
+            {[...comments]
               .sort((a, b) => b.createdAt - a.createdAt)
               .map((comment) => (
                 <Comment onRemove={onRemove} key={comment._id} {...comment} />

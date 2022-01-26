@@ -1,12 +1,16 @@
 /* eslint-disable indent */
 import { orderBy } from "lodash";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { USERS_PER_PAGE } from "../../../constants/constants";
-import { useAuth } from "../../../hooks/useAuth";
-import { useProfession } from "../../../hooks/useProfession";
-import { useUsers } from "../../../hooks/useUsers";
+import {
+  getProfessions,
+  getProfissionLoadingStatus
+} from "../../../store/professions";
+import { getCurrentUserId, getUsers } from "../../../store/users";
 import GroupList from "../../common/groupList";
 import Pagination from "../../common/pagination";
+import UsersLoader from "../../ui/hoc/usersLoader";
 import SearchField from "../../ui/searchField";
 import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
@@ -14,17 +18,13 @@ import UserTable from "../../ui/usersTable";
 const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProf, setSelectedProf] = useState();
-  // const [professions, setProfessions] = useState();
   const [sortBy, setSortBy] = useState({ iterator: "name", order: "asc" });
 
-  const { professions, isLoading: professionsLoading } = useProfession();
-  const { currentUser } = useAuth();
+  const professions = useSelector(getProfessions());
+  const professionsLoading = useSelector(getProfissionLoadingStatus());
+  const currentUserId = useSelector(getCurrentUserId());
 
-  const { users } = useUsers();
-
-  // useEffect(() => {
-  //   api.professions.fetchAll().then((data) => setProfessions(data));
-  // }, []);
+  const users = useSelector(getUsers());
 
   const [searchField, setSearchField] = useState("");
   const [foundUsers, setFoundUsers] = useState();
@@ -85,7 +85,7 @@ const UsersListPage = () => {
         )
       : foundUsers || data;
 
-    return filteredUsers.filter((user) => user._id !== currentUser._id);
+    return filteredUsers.filter((user) => user._id !== currentUserId);
   }
 
   if (users) {
@@ -102,54 +102,56 @@ const UsersListPage = () => {
     const currentPageUsers = sortedUsers.slice(startIndex, endEndex);
 
     return (
-      <div className="d-flex p-4">
-        {professions && !professionsLoading && (
-          <div className="d-flex flex-shrink-0 p-2 flex-column me-4">
-            <GroupList
-              items={professions}
-              onItemSelect={handlePfofessionSelect}
-              selectedItem={selectedProf}
-            />
-            <button
-              className="btn btn-secondary mt-2"
-              onClick={handleClearFilter}
-            >
-              Очистить
-            </button>
-          </div>
-        )}
-        <div className="d-flex flex-column flex-grow-1 align-items-start">
-          <SearchStatus length={filteredUsers.length} />
-          <form className="search w-100 mt-2">
-            <SearchField
-              name="search"
-              value={searchField}
-              placeholder="Search.."
-              onChange={handleChangeSearch}
-            />
-          </form>
-          {currentPageUsers.length && (
-            <div className="d-flex flex-column w-100">
-              <UserTable
-                users={currentPageUsers}
-                onSort={handleSort}
-                currentSort={sortBy}
-                onDelete={handleDelete}
-                onLikesToggle={handleLikesToggle}
+      <UsersLoader>
+        <div className="d-flex p-4">
+          {professions && !professionsLoading && (
+            <div className="d-flex flex-shrink-0 p-2 flex-column me-4">
+              <GroupList
+                items={professions}
+                onItemSelect={handlePfofessionSelect}
+                selectedItem={selectedProf}
               />
-              {filteredUsers.length > USERS_PER_PAGE && (
-                <div className="d-flex justify-content-center">
-                  <Pagination
-                    usersAmount={filteredUsers.length}
-                    currentPage={currentPage}
-                    onPageChange={handlePageChange}
-                  />
-                </div>
-              )}
+              <button
+                className="btn btn-secondary mt-2"
+                onClick={handleClearFilter}
+              >
+                Очистить
+              </button>
             </div>
           )}
+          <div className="d-flex flex-column flex-grow-1 align-items-start">
+            <SearchStatus length={filteredUsers.length} />
+            <form className="search w-100 mt-2">
+              <SearchField
+                name="search"
+                value={searchField}
+                placeholder="Search.."
+                onChange={handleChangeSearch}
+              />
+            </form>
+            {currentPageUsers.length && (
+              <div className="d-flex flex-column w-100">
+                <UserTable
+                  users={currentPageUsers}
+                  onSort={handleSort}
+                  currentSort={sortBy}
+                  onDelete={handleDelete}
+                  onLikesToggle={handleLikesToggle}
+                />
+                {filteredUsers.length > USERS_PER_PAGE && (
+                  <div className="d-flex justify-content-center">
+                    <Pagination
+                      usersAmount={filteredUsers.length}
+                      currentPage={currentPage}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </UsersLoader>
     );
   }
   return <p className="px-4">loading...</p>;
